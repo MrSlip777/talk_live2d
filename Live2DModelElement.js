@@ -332,11 +332,12 @@ LAppModel.prototype.load = function(gl, modelDefine, callback)
 
             for (var i = 0; i < thisRef.modelSetting.getTextureNum(); i++)
             {
-
                 var texPaths = thisRef.modelHomeDir +
                     thisRef.modelSetting.getTextureFile(i);
 
-                thisRef.loadTexture(gl, i, texPaths, function() {
+                thisRef.loadTexture(
+                    gl,
+                     i, texPaths, function() {
 
                     if( thisRef.isTexLoaded ) {
 
@@ -463,6 +464,7 @@ LAppModel.prototype.load = function(gl, modelDefine, callback)
 };
 
 
+
 LAppModel.prototype.release = function(gl)
 {
     // this.live2DModel.deleteTextures();
@@ -520,14 +522,7 @@ LAppModel.prototype.update = function()
     */
 
     //位置オフセット　Slip 2017/04/01
-    this.modelMatrix.setY(Number($SPM_live2d_pos_y)/240 + 1.0);
-    this.modelMatrix.setX(-1+Number($SPM_live2d_pos_x)/320);
-
-    //スケール定数　Slip 2018/01/26
-    var _scale = 0.0013114754110574722;
-    _scale = _scale*Number($SPM_live2d_scale)*0.01;
-    this.modelMatrix.scale(_scale,-_scale);
-    
+    this.modelMatrix.setY(1.1);
 
     //表情設定
     //this.setExpression(this.expression);
@@ -852,159 +847,6 @@ LAppModel.prototype.hitTest = function(id, testX, testY)
 
     return false;
 }
-
-
-//============================================================
-//============================================================
-//  class PlatformManager     extend IPlatformManager
-//============================================================
-//============================================================
-function PlatformManager()
-{
-
-}
-
-//============================================================
-//    PlatformManager # loadBytes()
-//============================================================
-PlatformManager.prototype.loadBytes       = function(path/*String*/, callback)
-{
-    var request = new XMLHttpRequest();
-	request.open("GET", path, true);
-	request.responseType = "arraybuffer";
-	request.onload = function(){
-		switch(request.status){
-		//ローカル環境対応　失敗したときも返り値が0になるが・・・
-	       	case 0:
-			callback(request.response);
-			break;
-		//ブラウザ環境対応
-		case 200:
-			callback(request.response);
-			break;
-		default:
-			console.error("Failed to load (" + request.status + ") : " + path);
-			break;
-		}
-	}
-	request.send(null);
-	//return request;
-}
-
-//============================================================
-//    PlatformManager # loadString()
-//============================================================
-PlatformManager.prototype.loadString      = function(path/*String*/)
-{
-    
-    this.loadBytes(path, function(buf) {        
-        return buf;
-    });
-    
-}
-
-//============================================================
-//    PlatformManager # loadLive2DModel()
-//============================================================
-PlatformManager.prototype.loadLive2DModel = function(path/*String*/, callback)
-{
-    var model = null;
-    
-    // load moc
-	this.loadBytes(path, function(buf){
-		model = Live2DModelWebGL.loadModel(buf);
-        callback(model);
-	});
-
-}
-
-//============================================================
-//    PlatformManager # loadTexture()
-//============================================================
-PlatformManager.prototype.loadTexture     = function(gl/*GL*/,model/*ALive2DModel*/, no/*int*/, path/*String*/, callback)
-{ 
-    // load textures
-    var loadedImage = new Image();
-    loadedImage.src = path;
-        
-    var thisRef = this;
-    loadedImage.onload = function() {
-                
-        var texture = gl.createTexture();	 // テクスチャオブジェクトを作成する
-        if (!texture){ console.error("Failed to generate gl texture name."); return -1; }
-
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);	// imageを上下反転
-
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, 
-                      gl.UNSIGNED_BYTE, loadedImage);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-        gl.generateMipmap(gl.TEXTURE_2D);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);	//imageを上下反転を戻す
- 
-        // 画像からWebGLテクスチャ化を生成し、モデルに登録
-        model.setTexture(no, texture);// モデルにテクスチャをセット
-        
-        // テクスチャオブジェクトを解放
-        texture = null;
-        
-        if (typeof callback == "function") callback();
-    };
-    
-    loadedImage.onerror = function() { 
-        console.error("Failed to load image : " + path); 
-    }
-}
-
-
-//============================================================
-//    PlatformManager # parseFromBytes(buf)
-//    ArrayBuffer から JSON に変換する
-//============================================================
-PlatformManager.prototype.jsonParseFromBytes = function(buf){
-    
-    var jsonStr;
-    
-    // BOMの有無に応じて処理を分ける
-    // UTF-8のBOMは0xEF 0xBB 0xBF（10進数：239 187 191）
-    var bomCode = new Uint8Array(buf, 0, 3);
-    if (bomCode[0] == 239 && bomCode[1] == 187 && bomCode[2] == 191) {
-        jsonStr = String.fromCharCode.apply(null, new Uint8Array(buf, 3));
-    } else {
-        jsonStr = String.fromCharCode.apply(null, new Uint8Array(buf));
-    }
-    
-    var jsonObj = JSON.parse(jsonStr);
-    
-    return jsonObj;
-};
-
-
-//============================================================
-//    PlatformManager # log()
-//============================================================
-PlatformManager.prototype.log             = function(txt/*String*/)
-{
-    console.log(txt);
-}
-
-
-PlatformManager.prototype.getWebGLContext = function(){
-	var NAMES = [ "webgl" , "experimental-webgl" , "webkit-3d" , "moz-webgl"];
-	
-	for( var i = 0; i < NAMES.length; i++ ){
-		try{
-			var ctx = this.canvas.getContext(NAMES[i], {premultipliedAlpha : true});
-			if(ctx) return ctx;
-		} 
-		catch(e){}
-	}
-	return null;
-};
-
 
 /**
  *
@@ -1339,7 +1181,7 @@ Live2DSprite.prototype._renderWebGL = function(renderer) {
 
     if (!this.modelReady) {
       const gl = renderer.gl;
-      // it is unreasonable how the next line works...😂
+      // it is unreasonable how the next line works... 
       gl.activeTexture(gl.TEXTURE0);
       return;
     }

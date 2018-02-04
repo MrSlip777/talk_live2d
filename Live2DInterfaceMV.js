@@ -123,33 +123,6 @@ Game_Live2d.prototype.setExpression = function(model_no,expression,motion_no) {
     this._motion_no[model_no] = motion_no;
 };
 
-/*
-//立ち位置制御 X方向
-Game_Live2d.prototype.setPos_x = function(model_no,pos_x) {
-    this._x[model_no] = pos_x;
-};
-
-//立ち位置制御 Y方向
-Game_Live2d.prototype.setPos_y = function(model_no,pos_y) {
-    this._y[model_no] = pos_y;
-};
-
-//スケール変更 X方向
-Game_Live2d.prototype.setScale_x = function(model_no,scale_x) {
-    this._scale_x[model_no] = scale_x;
-};
-
-//スケール変更 Y方向
-Game_Live2d.prototype.setScale_y = function(model_no,scale_y) {
-    this._scale_y[model_no] = scale_y;
-};
-
-//透過度
-Game_Live2d.prototype.setAlpha = function(model_no,alpha) {
-    this._alpha[model_no] = alpha;
-};
-*/
-
 //live2dモデル表示直後のパラメータ設定
 Game_Live2d.prototype.initModelParameter = function(model_no, x, y, scale_x, scale_y,alpha){
     this._x[model_no] = x;
@@ -189,11 +162,15 @@ Scene_Map.prototype.createlive2d = function(){
                 eyeBlink: false,
             });
 
-            this.addChild(this.live2dSprite[i]);
+
+            //this.live2dSprite[i].dummy_init();
+
             this.live2dSprite[i].setModelReady(true);
             this.live2dSprite[i].setPosition($gameLive2d._x[i],$gameLive2d._y[i]);
             this.live2dSprite[i].setScale($gameLive2d._scale_x[i],$gameLive2d._scale_y[i]);
             this.live2dSprite[i].setEmotion($gameLive2d._expression[i],$gameLive2d._motion_no[i]);
+
+            this.addChild(this.live2dSprite[i]);            
         }
     }
 

@@ -5,8 +5,7 @@
 //
 //====修正履歴====
 // Slip 2016/07/06 Live2d用に修正
-// Slip 2018/01/27 内部ピクチャへのlive2dモデル反映パラメータを追加
-// Slip 2018/01/27 表情の数を1～8→0～32へ拡張
+//
 //=============================================================================
 
 /*:
@@ -17,21 +16,6 @@
  * @desc 立ち絵を表示する際、この値の分だけ位置（高さ）が調整されます
  * この値は、このプラグインで表示する全ての立ち絵に適用されます
  * @default 0
- *
- * @param live2d_pos_x
- * @desc live2dモデル位置を内部ピクチャ内でx方向へ移動します。(-320～320)
- * この値は、このプラグインで表示する全ての立ち絵に適用されます
- * @default 0
- * 
- * @param live2d_pos_y
- * @desc live2dモデル位置を内部ピクチャ内でy方向へ移動します。(-240～240)
- * この値は、このプラグインで表示する全ての立ち絵に適用されます
- * @default 0
- *
- * @param live2d_scale
- * @desc live2dモデル位置を内部ピクチャ内で大きさを変更します。(単位：%)
- * この値は、このプラグインで表示する全ての立ち絵に適用されます
- * @default 100
  *
  * @param Stand_1_PictureNumber
  * @desc "立ち絵01"のピクチャ番号を指定
@@ -356,11 +340,6 @@
     $SPM_Pic_Opacity_obj = {};
     $SPM_Pic_Position_obj = {};
 
-    //live2dモデル調整用パラメータ　Slip 2018/01/26
-    $SPM_live2d_pos_x = String(parameters['live2d_pos_x']|0);
-    $SPM_live2d_pos_y = String(parameters['live2d_pos_y']|0);
-    $SPM_live2d_scale = String(parameters['live2d_scale']|0);
-    
     //最小透過度
     $SPM_live2d_minOpacity = 0.001;
     //$SPM_live2d_minOpacity = 0;
@@ -408,105 +387,30 @@
 
 	      //Live2d 表情変更 Slip 2016/07/15
         switch(args[const_SPM_PARA_expression]){
-            case '表情0':
+            case '表情1':
             $gameLive2d.setExpression(SPM_Id-1,'expression_00',0);
             break;
-            case '表情1':
+            case '表情2':
             $gameLive2d.setExpression(SPM_Id-1,'expression_01',1);
             break;
-            case '表情2':
+            case '表情3':
             $gameLive2d.setExpression(SPM_Id-1,'expression_02',2);
             break;
-            case '表情3':
+            case '表情4':
             $gameLive2d.setExpression(SPM_Id-1,'expression_03',3);
             break;
-            case '表情4':
+            case '表情5':
             $gameLive2d.setExpression(SPM_Id-1,'expression_04',4);
             break;
-            case '表情5':
+            case '表情6':
             $gameLive2d.setExpression(SPM_Id-1,'expression_05',5);
             break;
-            case '表情6':
+            case '表情7':
             $gameLive2d.setExpression(SPM_Id-1,'expression_06',6);
             break;
-            case '表情7':
+            case '表情8':
             $gameLive2d.setExpression(SPM_Id-1,'expression_07',7);
             break;
-            case '表情8':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_08',8);
-            break;
-            case '表情9':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_09',9);
-            break;
-            case '表情10':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_10',10);
-            break;
-            case '表情11':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_11',11);
-            break;
-            case '表情12':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_12',12);
-            break;
-            case '表情13':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_13',13);
-            break;
-            case '表情14':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_14',14);
-            break;
-            case '表情15':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_15',15);
-            break;
-            case '表情16':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_16',16);
-            break;   
-            case '表情17':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_17',17);
-            break;
-            case '表情18':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_18',18);
-            break;
-            case '表情19':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_19',19);
-            break;
-            case '表情20':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_20',20);
-            break;
-            case '表情21':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_21',21);
-            break;
-            case '表情22':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_22',22);
-            break;
-            case '表情23':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_23',23);
-            break;
-            case '表情24':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_24',24);
-            break;
-            case '表情25':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_25',25);
-            break;
-            case '表情26':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_26',26);
-            break;
-            case '表情27':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_27',27);
-            break;
-            case '表情28':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_28',28);
-            break;
-            case '表情29':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_29',29);
-            break;
-            case '表情30':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_30',30);
-            break;
-            case '表情31':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_31',31);
-            break;
-            case '表情32':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_32',32);
-            break;                        
 　　　　}
 
         var SPM_x = 0;
