@@ -6,8 +6,8 @@
  *
  *  (c) Live2D Inc. All rights reserved.
  */
-//XV—š—ğ
-//ƒcƒN[ƒ‹MVƒ[ƒJƒ‹ŠÂ‹«—p‚ÉC³@Slip 2018/02/04
+//æ›´æ–°å±¥æ­´
+//ãƒ„ã‚¯ãƒ¼ãƒ«MVãƒ­ãƒ¼ã‚«ãƒ«ç’°å¢ƒç”¨ã«ä¿®æ­£ã€€Slip 2018/02/04
 //
 //============================================================
 //============================================================
@@ -29,11 +29,11 @@ PlatformManager.prototype.loadBytes       = function(path/*String*/, callback)
 	request.responseType = "arraybuffer";
 	request.onload = function(){
 		switch(request.status){
-		//ƒ[ƒJƒ‹ŠÂ‹«‘Î‰@¸”s‚µ‚½‚Æ‚«‚à•Ô‚è’l‚ª0‚É‚È‚é‚ªEEE
+		//ãƒ­ãƒ¼ã‚«ãƒ«ç’°å¢ƒå¯¾å¿œã€€å¤±æ•—ã—ãŸã¨ãã‚‚è¿”ã‚Šå€¤ãŒ0ã«ãªã‚‹ãŒãƒ»ãƒ»ãƒ»
 	       	case 0:
 			callback(request.response);
 			break;
-		//ƒuƒ‰ƒEƒUŠÂ‹«‘Î‰
+		//ãƒ–ãƒ©ã‚¦ã‚¶ç’°å¢ƒå¯¾å¿œ
 		case 200:
 			callback(request.response);
 			break;
@@ -85,11 +85,11 @@ PlatformManager.prototype.loadTexture     = function(gl/*GL*/,model/*ALive2DMode
     var thisRef = this;
     loadedImage.onload = function() {
                 
-        var texture = gl.createTexture();	 // ƒeƒNƒXƒ`ƒƒƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚é
+        var texture = gl.createTexture();	 // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹
         if (!texture){ console.error("Failed to generate gl texture name."); return -1; }
 
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);	// image‚ğã‰º”½“]
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);	// imageã‚’ä¸Šä¸‹åè»¢
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -98,12 +98,12 @@ PlatformManager.prototype.loadTexture     = function(gl/*GL*/,model/*ALive2DMode
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
         gl.generateMipmap(gl.TEXTURE_2D);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);	//image‚ğã‰º”½“]‚ğ–ß‚·
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);	//imageã‚’ä¸Šä¸‹åè»¢ã‚’æˆ»ã™
  
-        // ‰æ‘œ‚©‚çWebGLƒeƒNƒXƒ`ƒƒ‰»‚ğ¶¬‚µAƒ‚ƒfƒ‹‚É“o˜^
-        model.setTexture(no, texture);// ƒ‚ƒfƒ‹‚ÉƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+        // ç”»åƒã‹ã‚‰WebGLãƒ†ã‚¯ã‚¹ãƒãƒ£åŒ–ã‚’ç”Ÿæˆã—ã€ãƒ¢ãƒ‡ãƒ«ã«ç™»éŒ²
+        model.setTexture(no, texture);// ãƒ¢ãƒ‡ãƒ«ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
         
-        // ƒeƒNƒXƒ`ƒƒƒIƒuƒWƒFƒNƒg‚ğ‰ğ•ú
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è§£æ”¾
         texture = null;
         
         if (typeof callback == "function") callback();
@@ -117,14 +117,14 @@ PlatformManager.prototype.loadTexture     = function(gl/*GL*/,model/*ALive2DMode
 
 //============================================================
 //    PlatformManager # parseFromBytes(buf)
-//    ArrayBuffer ‚©‚ç JSON ‚É•ÏŠ·‚·‚é
+//    ArrayBuffer ã‹ã‚‰ JSON ã«å¤‰æ›ã™ã‚‹
 //============================================================
 PlatformManager.prototype.jsonParseFromBytes = function(buf){
     
     var jsonStr;
     
-    // BOM‚Ì—L–³‚É‰‚¶‚Äˆ—‚ğ•ª‚¯‚é
-    // UTF-8‚ÌBOM‚Í0xEF 0xBB 0xBFi10i”F239 187 191j
+    // BOMã®æœ‰ç„¡ã«å¿œã˜ã¦å‡¦ç†ã‚’åˆ†ã‘ã‚‹
+    // UTF-8ã®BOMã¯0xEF 0xBB 0xBFï¼ˆ10é€²æ•°ï¼š239 187 191ï¼‰
     var bomCode = new Uint8Array(buf, 0, 3);
     if (bomCode[0] == 239 && bomCode[1] == 187 && bomCode[2] == 191) {
         jsonStr = String.fromCharCode.apply(null, new Uint8Array(buf, 3));
