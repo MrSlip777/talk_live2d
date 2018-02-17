@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------------
 // Game_Live2d
 //ゲームに使用するLive2Dの制御フラグ、設定ファイルなど
 // Slip 2016/12/25
@@ -7,58 +7,34 @@
 //コアスクリプトの修正
 var $gameLive2d       = null;
 
-DataManager.createGameObjects = function() {
-    $gameTemp          = new Game_Temp();
-    $gameSystem        = new Game_System();
-    $gameScreen        = new Game_Screen();
-    $gameTimer         = new Game_Timer();
-    $gameMessage       = new Game_Message();
-    $gameSwitches      = new Game_Switches();
-    $gameVariables     = new Game_Variables();
-    $gameSelfSwitches  = new Game_SelfSwitches();
-    $gameActors        = new Game_Actors();
-    $gameParty         = new Game_Party();
-    $gameTroop         = new Game_Troop();
-    $gameMap           = new Game_Map();
-    $gamePlayer        = new Game_Player();
+
+
+(function(){
+    'use strict'
+const  DataManager_createGameObjects = DataManager.createGameObjects;
+DataManager.createGameObjects =function(){
+    DataManager_createGameObjects.call(this);
     $gameLive2d        = new Game_Live2d();   //Slip 2017/03/25
 };
-
-Scene_Map.prototype.update = function() {
-    this.updateDestination();
-    this.updateMainMultiply();
-    if (this.isSceneChangeOk()) {
-        this.updateScene();
-    } else if (SceneManager.isNextScene(Scene_Battle)) {
-        this.updateEncounterEffect();
-    }
-    this.updateWaitCount();
+const Scene_Map_updateWaitCount =Scene_Map.prototype.updateWaitCount;
+Scene_Map.prototype.updateWaitCount =function(){
+    Scene_Map_updateWaitCount.call(this);
     this.updatelive2d();//Slip 2017/03/22
-    Scene_Base.prototype.update.call(this);
 };
 
-Scene_Map.prototype.terminate = function() {
-    Scene_Base.prototype.terminate.call(this);
-    if (!SceneManager.isNextScene(Scene_Battle)) {
-        this._spriteset.update();
-        this._mapNameWindow.hide();
-        SceneManager.snapForBackground();
-    }
-    $gameScreen.clearZoom();
-    this.removeChild(this._fadeSprite);
-    this.removeChild(this._mapNameWindow);
-    this.removeChild(this._windowLayer);
-    this.removeChild(this._spriteset);
-    this.removelive2d(); //Slip 2017/03/25
+const Scene_Map_terminate=Scene_Map.prototype.terminate;
+Scene_Map.prototype.terminate =function(){
+    Scene_Map_terminate.call(this);
+    this.removelive2d(); //Slip 2017/03/25\
 };
 
-Scene_Map.prototype.createDisplayObjects = function() {
-    this.createSpriteset();
-    this.createMapNameWindow();
+const Scene_Map_createWindowLayer=Scene_Map.prototype.createWindowLayer;
+Scene_Map.prototype.createWindowLayer=function(){
     this.createlive2d(); //Slip 2017/03/25    
-    this.createWindowLayer();
-    this.createAllWindows();
+    Scene_Map_createWindowLayer.call(this);
 };
+})();
+
 
 //Game_Live2dの追加
 function Game_Live2d() {
