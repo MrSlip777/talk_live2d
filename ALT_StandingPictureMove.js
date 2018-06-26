@@ -384,40 +384,34 @@
         var SPM_FileName = $Stand_Character_FileName_obj[args[const_SPM_PARA_name]];
         var SPM_Position = args[const_SPM_PARA_position];
         var _SPM_Position;
+        
+        //表情設定
+        var s_num = -1;
 
-	      //Live2d 表情変更 Slip 2016/07/15
-        switch(args[const_SPM_PARA_expression]){
-            case '表情1':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_00',0);
-            break;
-            case '表情2':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_01',1);
-            break;
-            case '表情3':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_02',2);
-            break;
-            case '表情4':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_03',3);
-            break;
-            case '表情5':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_04',4);
-            break;
-            case '表情6':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_05',5);
-            break;
-            case '表情7':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_06',6);
-            break;
-            case '表情8':
-            $gameLive2d.setExpression(SPM_Id-1,'expression_07',7);
-            break;
-　　　　}
+        if(args[const_SPM_PARA_expression].indexOf('表情')===0){
+          s_num = args[const_SPM_PARA_expression].substr(2);
+        }
+
+        if(args[const_SPM_PARA_expression].indexOf('expression')===0){
+          s_num = args[const_SPM_PARA_expression].substr(10);  
+        }
+
+        if(Number(s_num)>0){
+          if(Number(s_num)<10){
+            $gameLive2d.setExpression(SPM_Id-1,'expression_0'+s_num,Number(s_num));
+          }
+          else{
+            $gameLive2d.setExpression(SPM_Id-1,'expression_'+s_num,Number(s_num));
+          }
+        }
 
         var SPM_x = 0;
         var SPM_y = 0;
 
         //消去以外の処理
-        if (SPM_Position !== '消去') {
+        if (SPM_Position === '消去' || SPM_Position === 'hide') {
+        }
+        else{
             if (args[const_SPM_PARA_x] === 'x' || isNaN(args[const_SPM_PARA_x])) {
               args[const_SPM_PARA_x] = 0;
             }
@@ -425,21 +419,25 @@
 
             switch (SPM_Position) {
                 case '立ち位置':
+                case 'position':
                 SPM_x = Graphics.width / 2 - Graphics.width / 3 + args[const_SPM_PARA_x];
                 break;
                 case '右':
+                case 'right':
                 SPM_x = Graphics.width / 2 + Graphics.width / 3 + args[const_SPM_PARA_x];
                 break;
                 case '左':
+                case 'left':
                 SPM_x = Graphics.width / 2 - Graphics.width / 3 + args[const_SPM_PARA_x];
                 break;
                 case '中央':
+                case 'middle':
                 SPM_x = Graphics.width / 2 + args[const_SPM_PARA_x];
                 break;
-                case '前回':
+                case 'LastTime':
 
                   if(isNaN($SPM_Pic_x_obj[SPM_Id])){
-                    alert("立ち位置に前回のデータが保存されていません") 
+                    alert("立ち位置に前回のデータが保存されていません。The last data is not saved in the standing position.") 
                   }
                   else{
                     SPM_x = $SPM_Pic_x_obj[SPM_Id] + args[const_SPM_PARA_x];
@@ -447,7 +445,7 @@
                 break;
                 //Slip Live2d用に追加
                 default:
-                alert("立ち位置が不正です。立ち位置を'立ち位置'、'右'、'左'、'中央'、'前回'に設定して下さい")         
+                alert("立ち位置が不正です。立ち位置を'立ち位置'、'右'、'左'、'中央'、'前回'に設定して下さい。Standing position is invalid. Please set the standing position to 'Standing position', 'Right', 'Left', 'Center', 'Last time'")         
                 break;
             }
 
@@ -461,14 +459,14 @@
             
 
             if (args[const_SPM_PARA_scale_x] === 'x％'|| isNaN(args[const_SPM_PARA_scale_x])
-            || args[const_SPM_PARA_scale_x] == "") {
+            || args[const_SPM_PARA_scale_x] == "" || args[const_SPM_PARA_scale_x] === 'x%') {
               args[const_SPM_PARA_scale_x] = 100;
             }
             args[const_SPM_PARA_scale_x] = args[const_SPM_PARA_scale_x] - 0;
             SPM_Scale_x = args[const_SPM_PARA_scale_x];
 
             if (args[const_SPM_PARA_scale_y] === 'y％'|| isNaN(args[const_SPM_PARA_scale_y])
-            || args[const_SPM_PARA_scale_y] == "") {
+            || args[const_SPM_PARA_scale_y] == ""|| args[const_SPM_PARA_scale_y] === 'y%') {
               args[const_SPM_PARA_scale_y] = 100;
             }
             args[const_SPM_PARA_scale_y] = args[const_SPM_PARA_scale_y] - 0;
@@ -501,8 +499,8 @@
                   SPM_Duration = 0;
             }
             else{
-                  if (args[const_SPM_PARA_time] === "時間"|| args[const_SPM_PARA_time] == null
-                  || args[const_SPM_PARA_time] == "") {
+                  if (args[const_SPM_PARA_time] === '時間'|| args[const_SPM_PARA_time] == null
+                  || args[const_SPM_PARA_time] == "" || args[const_SPM_PARA_time] === 'time') {
                     SPM_Duration = 10;
                   }
                   else{
@@ -518,8 +516,10 @@
             //スライドアニメの設定
             switch (SPM_SlidePattern) {
             case 'スライド':
+            case 'Slide':
                   switch (SPM_Position) {
                       case '前回':
+                      case 'LastTime':
                         _SPM_Position = $SPM_Pic_Position_obj[SPM_Id]
                       break;
                   }
@@ -529,8 +529,10 @@
                   break;
 
             case 'なし':
+            case 'NoSlide':
                   switch (SPM_Position) {
                       case '前回':
+                      case 'LastTime':
                         _SPM_Position = $SPM_Pic_Position_obj[SPM_Id]
                       break;
                   }
@@ -540,32 +542,42 @@
                   break;
 
             case 'イン':
+            case 'SlideIn':
                   switch (SPM_Position) {
                       case '立ち位置':
+                      case 'position':
                       SPM_x += -10 * SPM_GraphicCoefficient;
                       break;
                       case '右':
+                      case 'right':
                       SPM_x += +10 * SPM_GraphicCoefficient;
                       break;
                       case '左':
+                      case 'left':
                       SPM_x += -10 * SPM_GraphicCoefficient;
                       break;
                       case '中央':
+                      case 'middle':
                       //alert("定位置以外でスライドさせたい場合は、立ち位置を'右'（or'左'）にして、プラグインコマンドの'x'に値を入れて調整して下さい")
                       break;
                       case '前回':
+                      case 'LastTime':
                         _SPM_Position = $SPM_Pic_Position_obj[SPM_Id]
                         switch (_SPM_Position) {
                           case '立ち位置':
+                          case 'position':
                           SPM_x_move += +10 * SPM_GraphicCoefficient;
                           break;
                           case '右':
+                          case 'right':
                           SPM_x_move += -10 * SPM_GraphicCoefficient;
                           break;
                           case '左':
+                          case 'left':
                           SPM_x_move += +10 * SPM_GraphicCoefficient;
                           break;
                           case '中央':
+                          case 'middle':
                           //alert("定位置以外でスライドさせたい場合は、立ち位置を'右'（or'左'）にして、プラグインコマンドの'x'に値を入れて調整して下さい")
                           break;
                         }
@@ -579,32 +591,42 @@
                   break;
 
             case 'アウト':
+            case 'SlideOut':
                   switch (SPM_Position) {
                       case '立ち位置':
+                      case 'position':
                       SPM_x_move += -10 * SPM_GraphicCoefficient;
                       break;
                       case '右':
+                      case 'right':
                       SPM_x_move += +10 * SPM_GraphicCoefficient;
                       break;
                       case '左':
+                      case 'left':
                       SPM_x_move += -10 * SPM_GraphicCoefficient;
                       break;
                       case '中央':
+                      case 'middle':
                       //alert("定位置以外でスライドさせたい場合は、立ち位置を'右'（or'左'）にして、プラグインコマンドの'x'に値を入れて調整して下さい")
                       break;
                       case '前回':
+                      case 'LastTime':
                         _SPM_Position = $SPM_Pic_Position_obj[SPM_Id]
                         switch (_SPM_Position) {
                           case '立ち位置':
+                          case 'position':
                           SPM_x_move += -10 * SPM_GraphicCoefficient;
                           break;
                           case '右':
+                          case 'right':
                           SPM_x_move += +10 * SPM_GraphicCoefficient;
                           break;
                           case '左':
+                          case 'left':
                           SPM_x_move += -10 * SPM_GraphicCoefficient;
                           break;
                           case '中央':
+                          case 'middle':
                           //alert("定位置以外でスライドさせたい場合は、立ち位置を'右'（or'左'）にして、プラグインコマンドの'x'に値を入れて調整して下さい")
                           break;
                         }
@@ -654,7 +676,7 @@
             //live2dモデルの表示フラグ=オン Slip 2016/07/03
             $gameLive2d.showModel(SPM_Id-1);
 
-            if (args[const_SPM_PARA_wait] === 'ウェイトあり') {
+            if (args[const_SPM_PARA_wait] === 'ウェイトあり' || args[const_SPM_PARA_wait] === 'Wait') {
               this.wait(SPM_Duration);
             }
 
@@ -664,7 +686,7 @@
             $SPM_Pic_Scale_x_obj[SPM_Id] = SPM_Scale_x_move;
             $SPM_Pic_Scale_y_obj[SPM_Id] = SPM_Scale_y_move;
             $SPM_Pic_Opacity_obj[SPM_Id] = SPM_Opacity_move;
-            if (SPM_Position === '前回') {
+            if (SPM_Position === '前回' || SPM_Position === 'LastTime') {
               SPM_Position = _SPM_Position;
             }
             $SPM_Pic_Position_obj[SPM_Id] = SPM_Position;
@@ -672,7 +694,7 @@
           }//消去以外の処理 終了
 
           //消去処理
-          if (SPM_Position === '消去') {
+          if (SPM_Position === '消去' || SPM_Position === 'hide') {
               var SPM_Id = $Stand_Character_PictureNumber_obj[args[const_SPM_PARA_name]];
               var SPM_Erase_x = $SPM_Pic_x_obj[SPM_Id];
               var SPM_Erase_y = $SPM_Pic_y_obj[SPM_Id];
@@ -681,7 +703,8 @@
               _SPM_Position = $SPM_Pic_Position_obj[SPM_Id]
 
 	　　　       //const_SPM_PARA_slidepatternの代入値は例外
-              if (args[const_SPM_PARA_slidepattern] === '時間'|| args[const_SPM_PARA_time] == null){
+              if (args[const_SPM_PARA_slidepattern] === '時間'|| args[const_SPM_PARA_time] == null
+              ||args[const_SPM_PARA_slidepattern] === 'time'){
                 args[const_SPM_PARA_slidepattern] = 10;
               }
               var _SPM_Erase_Duration = args[const_SPM_PARA_slidepattern];
@@ -701,7 +724,7 @@
               $gameLive2d.moveModelParameter(SPM_Id-1,live2d_SPM_Erase_x, live2d_SPM_Erase_y, 
               live2d_SPM_Erase_Scale_x, live2d_SPM_Erase_Scale_y,0,SPM_Erase_Duration);
 
-              if (args[const_SPM_PARA_time] === 'ウェイトあり') {
+              if (args[const_SPM_PARA_time] === 'ウェイトあり' || args[const_SPM_PARA_time] === 'Wait') {
                 this.wait(SPM_Erase_Duration);
               }
 
@@ -712,7 +735,7 @@
               $SPM_Pic_Scale_y_obj[SPM_Id] = SPM_Erase_Scale_y;
               $SPM_Pic_Opacity_obj[SPM_Id] = 0;
 
-              if (SPM_Position === '前回') {
+              if (SPM_Position === '前回' || SPM_Position === 'LastTime') {
                 SPM_Position = _SPM_Position;
               }
             }     // 消去処理  終了
